@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "defaultFile": "src/solana.js",
-  "environment": "nodejs",
+  "environment": "solana-node",
   "setupCommands": ["npm i"],
   "compileCommand": "",
   "tests": [
