@@ -1,6 +1,5 @@
 # Creating a Roulette Game 
 Welcome quest masters. After learning how to airdrop SOL to your wallet, let us build something interesting. In this quest you will learn how to get the wallet Balance, and transfer SOL to a wallet, all by creating an amazing Roulette Game. 
-We will be working in the NodeJS environment. So, I will request you to install `npm` and `NodeJS` on your system. 
 By the end of this quest, you will be ready to build more advanced things on Solana blockchain using its npm packages. 
 
 ## Game Overview and Project Initialization 
@@ -14,71 +13,15 @@ On successful win, the user will get the prize money (`Amount`*`Ratio`) in their
 
 `NOTE:` Only a  maximum of `2.5 SOL` can be staked during a single guess. 
 
-Move to the preferred location on your machine and open terminal. Create a folder named `roulette`. Make sure you have successfully installed `npm` & `Node`. To check it, type in terminal `npm -v`. It will console out the version of npm installed. For checking about NodeJS, you can type `node -v`.
-
-Now, let's initialize a NodeJS application using the command: `npm init`. Fill in the details about the project. To directly initialize the project, use the command `npm init -y`. It will create a `package.json` file, which keeps track of all the npm packages,i.e. node packages that will be used in your project. 
-
-
-## Setting up NodeJS application
-A `.js` file is created which will contain all the scripts for running the application. In case of this application, we create a file named `index.js`. 
-
-Let us create a basic statement and execute the application. In the file, put in the following instruction:
-```sh
-console.log("My first NodeJS application");
-```
-`console.log()` function prints the contents passed in the terminal. To run the application, we can use the following command: 
-> node index.js 
-
-![Initial Setup](https://raw.githubusercontent.com/vamsi937/roulette_game_in_solana/main/learn_assets/1_setup.png)
-
-Congratulations, you have now successfully run your first NodeJS application. 
-
 ## @solana/web3.js
 
 Solana nodes accept HTTP requests using the JSON-RPC 2.0 specification.
 To interact with a Solana node inside a Javascript application, we use the `solana-web3.js` library. It is available in the form of npm package as `@solana/web3.js`. 
-To install this package, execute the following command:
-> npm install @solana/web3.js 
 
-A `node_modules` folder will be created containing files related to the package.
-
-Now, lets declare a variable for the installed package. 
-```sh
+We have already declared a variable for that installed package. 
+```
 const web3 = require("@solana/web3.js");
 ```
-`NOTE:`
-- For installing all the packages for the application which is already listed in `package.json` file, use the command `npm install`. 
-- The quest was written with `@solana/web3.js` package of version `v.1.30.2` which you can check from the package.json file which was initially generated. If you try to follow this quest and find some funcitons not working, please roll back to the version in use here.
-
-## Establishing Connection  
-First, we will establish a connection to a particular network on Solana. We use the `Connection` method from web3.js library. For this quest, we will be connected to the `devnet`. The connection constructor takes in a string representation of endpoint URL and commitment level. The end point URL can be specified using the `clusterApiUrl()` function which will return the current live endpoint to the Solana network we provide.
-For our case, we will be using the `devnet` network. The code for connection will look like this:
-```sh
-
-const connection=new web3.connection(web3.clusterApiUrl("devnet"),"confirmed");
-//For checking whether the connection is successfully made
-console.log(connection);
-```
-The console will print the whole connection object with the _rpcEndpoint value as `https://api.devnet.solana.com`. Also, all the other information and objects of connection will be printed.
-
-## Generating Address and Funds 
-
-The winning prize for the player is airdropped here (You can also use a wallet with good amount of SOL). But for the player, they need to have a wallet from which they will be paying SOL or receiving prize. We can generate a new wallet pair using the `Keypair` method. 
-```sh
-const userWallet=web3.Keypair.generate();
-console.log(userWallet);
-```
-It will be printing the Public Key and the Secret Key for the generated wallet(in Uint8 Array format). 
-
-![Wallet Generation](https://raw.githubusercontent.com/vamsi937/roulette_game_in_solana/main/learn_assets/2_wallet_generation.png)
-
-Store it in variables(`userPublicKey` & `userSecretKey`), if you don't want to create a new `userWallet` everytime during the execution of the application. As we can generate a wallet instance from the secret key as:
-```sh
-const userWallet=web3.Keypair.fromSecretKey(Uint8Array.from(userSecretKey));
-```
-
-You can airdrop some SOL into this wallet using the functions from the previous quest.
-Now, we gave successfully established a connection, have wallets and funds in the wallet for the game. 
 
 ## Transaction Overview
 For making a successful transaction, the things needed:
@@ -89,14 +32,24 @@ For making a successful transaction, the things needed:
 
 Initially, the participation amount will be from the user wallet and transferred to a `treasuryWallet`, whose secret key and wallet instance is already available. Thus, we can execute a transaction now. First, we will be creating a new transaction object. Then, we will be sending that transaction to another user and add our signature to it.
 
+## Establishing Connection  
+First, we will establish a connection to a particular network on Solana. We use the `Connection` method from web3.js library. For this quest, we will be connected to the `devnet`. The connection constructor takes in a string representation of endpoint URL and commitment level. The end point URL can be specified using the `clusterApiUrl()` function which will return the current live endpoint to the Solana network we provide.
+For our case, we will be using the `devnet` network. The code for connection will look like this, type this out in `transferSol()` function:
+```
+const connection=new web3.connection(web3.clusterApiUrl("devnet"),"confirmed");
+//For checking whether the connection is successfully made
+console.log("RPC endpoint:", connection._rpcEndpoint);
+```
+Hit `Save` and `Run`.
+The console output 1 will print the _rpcEndpoint value as `https://api.devnet.solana.com`.
 
 ## Creating Transaction
 We can start with creating a empty Transaction object. And, then we will add instructions to the Transaction object. `SystemProgram.transfer()` method is responsible for sending the funds from one account to another. It takes several arguments:
 - fromPubkey: the public key of the account that we are sending funds from
 - toPubkey: the public key of the account that is receiving funds from the transaction
 - lamports: the amount of lamports to be sent. ( `1 SOL = 1000000000 lamports`)
-The transaction variable will look like this:
-```sh
+The transaction variable will look like this, code this in `transferSOL()` function:
+```
 const transaction=new web3.Transaction().add(
     web3.SystemProgram.transfer({
         fromPubkey:new web3.PublicKey(from.publicKey.toString()),
@@ -116,47 +69,30 @@ We will now need to authorize the transaction by signing it with our Secret key.
 `NOTE:` There is also another parameter called commitment option, if it is not specified, the max commitment option will be used. 
 
 The signature variable will look like this:
-```sh
+```
 const signature=await web3.sendAndConfirmTransaction(
     connection, 
     transaction,
     [fromWalletInstance]
 );
 console.log('Signature is ',signature);
+return signature;
 ```
 If successful, the transaction signature is printed out. 
 
-Putting together all these in a single function, we create a function called transferSOL. It will look like this:
-```sh
-const transferSOL=async (from,to,transferAmt)=>{
-    try{
-        const connection=new web3.Connection(web3.clusterApiUrl("devnet"),"confirmed");
-        const transaction=new web3.Transaction().add(
-            web3.SystemProgram.transfer({
-                fromPubkey:new web3.PublicKey(from.publicKey.toString()),
-                toPubkey:new web3.PublicKey(to.publicKey.toString()),
-                lamports:transferAmt*web3.LAMPORTS_PER_SOL
-            })
-        )
-        const signature=await web3.sendAndConfirmTransaction(
-            connection,
-            transaction,
-            [from]
-        )
-        return signature;
-    }catch(err){
-        console.log(err);
-    }
-}
-```
 Here, the parameters for the function is: 
 - `from` refers to the from wallet instance
 - `to` refers to the to wallet instance
 - `transferAmt` refers to the amount in SOL to be transferred during the transaction. 
+
+Hit `Save` and `Run` to test what we have written so far.
+You should see in the 2nd test output, we transferred 3 SOLs from `wallet1` to `wallet2`.
+
 ## Getting Wallet Balance
 
 The wallet balance can be also found from the `Public Key` of the wallet using the `Connection` object. First, we establish the connection and store it in a connection variable. Then, we use the function `getBalance()` and pass in the public key. We get the balance in `LAMPORTS`. To get the balance in SOL, we divide the balance by `LAMPORTS_PER_SOL`. The resultant function will be:
-```sh
+You don't need to code it out as we already wrote the same function in earlier quest.
+```
 const getWalletBalance=async (pubk)=>{
     try{
         const connection=new web3.Connection(web3.clusterApiUrl("devnet"),"confirmed");
@@ -170,9 +106,12 @@ const getWalletBalance=async (pubk)=>{
 
 ## Project Structure
 
+Note:
+- You can select and view another file by clicking on `...` three dots menu.
+
 In the main file of `index.js`, we define all the other packages in use for printing messages in the console. (like `chalk`, `inquirer`,`figlet`). Also, the function for execution of game (namely `gameExecution()` is defined in the file). Some functions which are help during the game are defined in a file named `helper.js`. 
 We require all the helper functions in the `index.js` file using the following instruction:
-```sh
+```
 const { getReturnAmount, totalAmtToBePaid, randomNumber } = require('./helper');
 ```
 - `getReturnAmount` function returns the total amount the player will get if his/her guess is correct.
@@ -180,9 +119,10 @@ const { getReturnAmount, totalAmtToBePaid, randomNumber } = require('./helper');
 - `randomNumber` function generates a number between the defined range of [min,max] passed as parameter.
 
 The functions dealing with the Solana network are defined in a separate file named `solana.js`. We require these functions in the `index.js` file using the following line:
-```sh
+```
 const {getWalletBalance,transferSOL,airDropSol}=require("./solana");
 ```
+- `generateWallet` function create a new public-private keypair and returns it
 - `getWalletBalance` function returns the balance of wallet passed as argument
 - `transferSOL` function contains the transfer instruction (for transfering SOL from one wallet to another)
 - `airDropSol` function is used to airdrop Lamports on to the wallet (works only in the `devnet`)
@@ -190,7 +130,9 @@ const {getWalletBalance,transferSOL,airDropSol}=require("./solana");
 
 ## Running Application
 
-In the terminal, change your directory to the application folder and then run command `node index.js`. It will be asking a list of questions and you can guess the number at the end.
+Hit `Run` and check 3rd test output to see how the whole game plays out.
+
+It should be similar to output from one of the below outputs.
 
 ![Losing Game](https://raw.githubusercontent.com/vamsi937/roulette_game_in_solana/main/learn_assets/3_failed_game.png)
 

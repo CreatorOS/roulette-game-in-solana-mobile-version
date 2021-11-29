@@ -1,0 +1,13 @@
+{
+  "version": "1.0.0",
+  "defaultFile": "src/solana.js",
+  "environment": "nodejs",
+  "setupCommands": ["npm i"],
+  "compileCommand": "",
+  "tests": [
+    { "itShould": "call transferSol and print connection URL", "command": "node scripts/01_transferSol_connection.js" },
+    { "itShould": "get wallet balance", "command": "node scripts/02_transferSol.js" },
+    { "itShould": "play the game with default params", "command": "node src/index.js" }
+  ],
+  "learnerAccessibleFileList": ["src/*"]
+}

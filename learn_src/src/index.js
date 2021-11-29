@@ -109,9 +109,19 @@ const gameExecution=async ()=>{
     init();
     const generateRandomNumber=randomNumber(1,5);
     // console.log("Generated number",generateRandomNumber);
-    const answers=await askQuestions();
+    // const answers=await askQuestions();
+    const answers = {
+        SOL: 0.2,
+        RANDOM: 3,
+        RATIO: 1.25
+    };
+    console.log('SOL staked: ', chalk.green`${answers.SOL}`);
+    console.log('RATIO selected: ', chalk.green`${answers.RATIO}`);
+    console.log('Random Number selected: ', chalk.green`${answers.RANDOM}`);
     if(answers.RANDOM){
         const paymentSignature=await transferSOL(userWallet,treasuryWallet,totalAmtToBePaid(answers.SOL))
+        if(!paymentSignature)
+            process.exit(1);
         console.log(`Signature of payment for playing the game`,chalk.green`${paymentSignature}`);
         if(answers.RANDOM===generateRandomNumber){
             //AirDrop Winning Amount

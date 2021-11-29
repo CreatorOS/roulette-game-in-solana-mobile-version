@@ -1,5 +1,14 @@
 const web3=require("@solana/web3.js");
 
+const generateWallet = () => {
+    const newPair = new web3.Keypair();
+  
+    publicKey = new web3.PublicKey(newPair._keypair.publicKey).toString();
+    secretKey = newPair._keypair.secretKey;
+  
+    return newPair;
+}
+
 const getWalletBalance=async (pubk)=>{
     try{
         const connection=new web3.Connection(web3.clusterApiUrl("devnet"),"confirmed");
@@ -13,6 +22,7 @@ const getWalletBalance=async (pubk)=>{
 const transferSOL=async (from,to,transferAmt)=>{
     try{
         const connection=new web3.Connection(web3.clusterApiUrl("devnet"),"confirmed");
+        console.log("RPC endpoint:", connection._rpcEndpoint);
         const transaction=new web3.Transaction().add(
             web3.SystemProgram.transfer({
                 fromPubkey:new web3.PublicKey(from.publicKey.toString()),
@@ -25,6 +35,7 @@ const transferSOL=async (from,to,transferAmt)=>{
             transaction,
             [from]
         )
+        console.log('Signature is ',signature);
         return signature;
     }catch(err){
         console.log(err);
@@ -45,5 +56,6 @@ const airDropSol=async (wallet,transferAmt)=>{
 module.exports={
     getWalletBalance,
     transferSOL,
-    airDropSol
+    airDropSol,
+    generateWallet
 }

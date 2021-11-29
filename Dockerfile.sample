@@ -1,0 +1,6 @@
+FROM node:14.18.1-alpine3.14
+WORKDIR /app
+RUN npm init -y
+RUN npm install --save @solana/web3.js chalk figlet inquirer yargs-parser
+
+COPY ./ ./
