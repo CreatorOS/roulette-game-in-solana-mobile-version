@@ -2,6 +2,7 @@ const inquirer = require("inquirer");
 const chalk = require("chalk");
 const figlet = require("figlet");
 const { Keypair } = require('@solana/web3.js');
+const fs = require('fs');
 
 const {getWalletBalance,transferSOL,airDropSol}=require("./solana");
 const { getReturnAmount, totalAmtToBePaid, randomNumber } = require('./helper');
@@ -28,38 +29,10 @@ const init = () => {
 //Ask for the generated Number 
 //If true return the SOL as per ratio
 
-// const userWallet=web3.Keypair.generate();
 
-// const userPublicKey=[
-//     6,  85, 188,  71, 255,  12, 214, 102,
-//    84, 170, 129, 127,  64,  57, 133,  22,
-//    10,   9, 135,  34,  75, 223, 107, 252,
-//   253,  22, 242, 135, 180, 245, 221, 155
-// ]
-const userSecretKey=[
-    229,  65,  12, 110, 128, 101,  62, 119, 239,  95,  26,
-     67, 178,  99,  40,  77,  46, 151, 163, 227, 167,   5,
-    138, 101, 140, 195, 212, 161, 105, 216,  79,  73,   6,
-     85, 188,  71, 255,  12, 214, 102,  84, 170, 129, 127,
-     64,  57, 133,  22,  10,   9, 135,  34,  75, 223, 107,
-    252, 253,  22, 242, 135, 180, 245, 221, 155
-]
-
-const userWallet=Keypair.fromSecretKey(Uint8Array.from(userSecretKey));
-
-
-//Treasury
-const secretKey=[
-    111, 188,  76, 169,  30, 105, 254,  33, 228,  66,  56,
-    215,   9,  37,  51, 188, 188, 188,  20, 224, 228, 115,
-     17, 163, 151, 105, 113, 251, 105, 177,  28, 157, 125,
-    202, 195, 203, 253, 137,  26, 209,   7,   2,  66, 193,
-     76, 241, 203, 168, 213,   5, 226,  11, 142,  44, 125,
-    191, 167, 172, 166, 207, 176, 137, 210,  27
-]
-
-const treasuryWallet=Keypair.fromSecretKey(Uint8Array.from(secretKey));
-
+const wallets = JSON.parse((fs.readFileSync('wallets.json', 'utf-8')).toString());
+const userWallet= Keypair.fromSecretKey(Uint8Array.from(wallets.s1));
+const treasuryWallet= Keypair.fromSecretKey(Uint8Array.from(wallets.s2));
 
 const askQuestions = () => {
     const questions = [

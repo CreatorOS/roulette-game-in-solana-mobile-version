@@ -3,8 +3,9 @@
   "defaultFile": "src/solana.js",
   "environment": "solana-node",
   "setupCommands": ["npm i"],
-  "compileCommand": "echo 'No scripts to compile'",
+  "compileCommand": "node scripts/00_init.js",
   "tests": [
+    { "itShould": "call transferSol and print RPC endpoint", "command": "node scripts/01_transferSol_connection.js" },
     { "itShould": "call transferSol and transfer 3 SOL", "command": "node scripts/02_transferSol.js" },
     { "itShould": "play the game with default params", "command": "node src/index.js" }
   ],

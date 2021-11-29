@@ -37,7 +37,10 @@ First, we will establish a connection to a particular network on Solana. We use 
 For our case, we will be using the `devnet` network. The code for connection will look like this, type this out in `transferSol()` function:
 ```
 const connection=new web3.connection(web3.clusterApiUrl("devnet"),"confirmed");
+console.log('RPC endpoint:', connection._rpcEndpoint)
 ```
+Hit `Save` and `Run`.
+Now, check the RPC endpoint URL in test output 1. It should be `https://api.devnet.solana.com`.
 
 ## Creating Transaction
 We can start with creating a empty Transaction object. And, then we will add instructions to the Transaction object. `SystemProgram.transfer()` method is responsible for sending the funds from one account to another. It takes several arguments:
