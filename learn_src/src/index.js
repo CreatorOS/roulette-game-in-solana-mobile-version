@@ -97,8 +97,6 @@ const gameExecution=async ()=>{
             process.exit(1);
         console.log(`Signature of payment for playing the game`,chalk.green`${paymentSignature}`);
         if(answers.RANDOM===generateRandomNumber){
-            //AirDrop Winning Amount
-            await airDropSol(treasuryWallet,getReturnAmount(answers.SOL,parseFloat(answers.RATIO)));
             //guess is successfull
             const prizeSignature=await transferSOL(treasuryWallet,userWallet,getReturnAmount(answers.SOL,parseFloat(answers.RATIO)))
             console.log(chalk.green`Your guess is absolutely correct`);
